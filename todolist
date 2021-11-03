@@ -1,0 +1,112 @@
+import java.util.Scanner;
+
+class List {
+    private static String[] model = new String[10];
+    private static final Scanner scn = new Scanner(System.in);
+    private static final List to = new List();
+
+    public static void main(String[] args) {
+        to.viewShowTodoList();
+    }
+
+    private void showTodoList() {
+        System.out.println("\nTODO LIST");
+        for (int i = 0; i < model.length; i++) {
+            String todo = model[i];
+            int no = i + 1;
+
+            if (todo != null) {
+                System.out.println(no + ". " + todo);
+            }
+        }
+    }
+
+    private void addTodoList(String todo) {
+        boolean isFull = true;
+        for (String s : model) {
+            if (s == null) {
+                isFull = false;
+                break;
+            }
+        }
+
+        if (isFull) {
+            String[] temp = model;
+            model = new String[model.length * 2];
+            System.arraycopy(temp, 0, model, 0, temp.length);
+        }
+
+        for (int i = 0; i < model.length; i++) {
+            if (model[i] == null) {
+                model[i] = todo;
+                break;
+            }
+        }
+    }
+
+    private boolean removeTodoList(int number) {
+        if ((number - 1) >= model.length) {
+            return false;
+        } else if (model[number - 1] == null) {
+            return false;
+        } else {
+            for (int i = (number - 1); i < model.length; i++) {
+
+                if (i == (model.length - 1)) {
+                    model[i] = null;
+                } else {
+                    model[i] = model[i + 1];
+                }
+            }
+            return true;
+        }
+    }
+
+    private String input(String info) {
+        System.out.print(info + " : ");
+        return scn.nextLine();
+    }
+
+    private void viewShowTodoList() {
+        while (true) {
+            to.showTodoList();
+            System.out.println("\nMENU: ");
+            System.out.println("1. Tambah");
+            System.out.println("2. Hapus");
+            System.out.println("X. Keluar");
+
+            String input = to.input("Pilih");
+
+            if (input.equals("X")) {
+                break;
+            } else {
+                switch (input) {
+                    case "1" -> to.viewAddTodoList();
+                    case "2" -> to.viewRemoveTodoList();
+                    default -> System.out.println("Kamu salah input");
+                }
+            }
+        }
+    }
+
+    private void viewAddTodoList() {
+        System.out.println("MENAMBAH TODOLIST");
+        String todo = to.input("Todo (x Jika Batal)");
+        if (!todo.equals("X")) {
+            addTodoList(todo);
+        }
+    }
+
+    private void viewRemoveTodoList() {
+        System.out.println("MENGHAPUS TODOLIST");
+
+        String number = to.input("Nomor yang dihapus (X Jika Batal)");
+
+        if (!number.equals("X")) {
+            boolean success = to.removeTodoList(Integer.parseInt(number));
+            if (!success) {
+                System.out.println("Gagal Hapus TodoList: " + number);
+            }
+        }
+    }
+}
